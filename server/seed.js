@@ -76,11 +76,7 @@ const {
     }),
       ]);
   
-    console.log("users and products created");
-  
-    console.log(await fetchUsers());
-    console.log(await fetchProducts());
-  
+ 
     const [cart1, cart2, cart3, cart4] = await Promise.all([
         createUserProducts({
           user_id: user1.id,
@@ -106,15 +102,6 @@ const {
           quantity: 2
         }),
       ]);
-
-    console.log("cart created");
-  
-    console.log(await fetchUserProducts(cart1.user_id));
-  
-    await destroyUserProducts({user_id:cart1.user_id, id:cart1.id});
-    console.log("deleted cart");
-  
-    console.log(await fetchUserProducts(cart1.user_id));
   
     await client.end();
   };

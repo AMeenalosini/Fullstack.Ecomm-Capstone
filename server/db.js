@@ -33,7 +33,7 @@ const createTables = async()=> {
             id UUID PRIMARY KEY,
             description VARCHAR(255) NOT NULL,
             image_url VARCHAR(255) NOT NULL,
-            price FLOAT NOT NULL
+            price NUMERIC(10, 2) NOT NULL
         );
 
         CREATE TABLE user_products(
@@ -47,14 +47,16 @@ const createTables = async()=> {
         CREATE TABLE orders(
             id UUID PRIMARY KEY,
             user_id UUID REFERENCES users(id) NOT NULL, 
-            created_at TIMESTAMP DEFAULT now()
+            created_at TIMESTAMP DEFAULT now(),total_item INTEGER NOT NULL,
+            total_amount NUMERIC(10, 2) NOT NULL,
+            final_amount NUMERIC(10, 2) NOT NULL
         );
 
         CREATE TABLE order_items(
             id UUID PRIMARY KEY,
             order_id UUID REFERENCES orders(id) NOT NULL, 
             product_id UUID REFERENCES products(id) NOT NULL,
-            price FLOAT NOT NULL,
+            price NUMERIC(10, 2) NOT NULL,
             quantity INTEGER NOT NULL
         );
     `;
@@ -129,7 +131,7 @@ async function createUsers({username, password, admin = false, name, e_add, m_ad
 //FETCH Users table
 const fetchUsers = async()=> {
   const SQL = `
-    SELECT id, username FROM users;
+    SELECT * FROM users;
   `;
   const response = await client.query(SQL);
   return response.rows;
@@ -219,11 +221,11 @@ const updateUserProducts  = async({ quantity, id })=> {
 };
 
 //DELETE one product from UserProducts table
-const destroyUserProducts = async({ user_id, id })=> {
+const destroyUserProducts = async(id)=> {
   const SQL = `
-    DELETE FROM user_products WHERE user_id=$1 AND id=$2
+    DELETE FROM user_products WHERE id=$1
   `;
-  await client.query(SQL, [user_id, id]);
+  await client.query(SQL, [id]);
 };
 
 //DELETE user cart from the UserProducts table
@@ -235,11 +237,29 @@ const destroyCart = async({ user_id })=> {
 };
 
 //CREATE Order table
-const createOrder = async({ user_id })=> {
+const createOrder = async({ user_id, total_item, total_amount, final_amount})=> {
   const SQL = `
-    INSERT INTO orders(id, user_id) VALUES($1, $2) RETURNING *
+    INSERT INTO orders(id, user_id, total_item, total_amount, final_amount) VALUES($1, $2, $3, $4, $5) RETURNING *
   `;
-  const response = await client.query(SQL, [uuid.v4(), user_id]);
+  const response = await client.query(SQL, [uuid.v4(), user_id, total_item, total_amount, final_amount]);
+  return response.rows[0];
+};
+
+//FETCH Order from Order table
+const fetchOrder = async(id)=> {
+  const SQL = `
+    SELECT * FROM orders where user_id = $1;
+  `;
+  const response = await client.query(SQL, [id]);
+  return response.rows;
+};
+
+//UPDATE final total in the Order table
+const updateOrderAmount  = async({ final_amount, user_id })=> {
+  const SQL = `
+    UPDATE orders SET final_amount = $1 where user_id = $2 RETURNING *
+  `;
+  const response = await client.query(SQL, [final_amount, user_id]);
   return response.rows[0];
 };
 
@@ -252,6 +272,22 @@ const createOrderItems = async({ order_id, product_id, price, quantity })=> {
   return response.rows[0];
 };
 
+//DELETE a product from UserProducts table by the admin
+const admindeleteSproduct = async({product_id})=> {
+  const SQL = `
+    DELETE FROM user_products WHERE product_id = $1;
+  `;
+  await client.query(SQL, [product_id]);
+};
+
+//DELETE a product from order_items table by the admin
+const admindeleteOproduct = async({product_id})=> {
+  const SQL = `
+    DELETE FROM order_items WHERE product_id = $1;
+  `;
+  await client.query(SQL, [product_id]);
+};
+
 module.exports = {
   client,
   createTables,
@@ -259,6 +295,8 @@ module.exports = {
   createProduct,
   updateProducts,
   createOrder,
+  fetchOrder,
+  updateOrderAmount,
   createOrderItems,
   fetchUsers,
   fetchProducts,
@@ -269,6 +307,8 @@ module.exports = {
   createUserProducts,
   destroyUserProducts,
   destroyCart,
+  admindeleteSproduct,
+  admindeleteOproduct,
   authenticate,
   findUserWithToken,
   signToken

@@ -13,7 +13,11 @@ const {
   destroyCart,
   updateUserProducts,
   createOrder,
+  fetchOrder,
+  updateOrderAmount,
   createOrderItems,
+  admindeleteSproduct,
+  admindeleteOproduct,
   authenticate,
   findUserWithToken,
   signToken
@@ -124,21 +128,21 @@ app.post('/api/users/cart', isLoggedIn, async(req, res, next)=> {
   }
 });
 
-// API for USER to DELETE the product in their CART
-app.delete('/api/users/cart/:id', isLoggedIn, async(req, res, next)=> {
-  try {
-    await destroyUserProducts({user_id: req.user.id, id: req.params.id });
-    res.sendStatus(204);
-  }
-  catch(ex){
-    next(ex);
-  }
-});
+  // API for USER to DELETE the product in their CART
+  app.delete('/api/users/cart', isLoggedIn, async(req, res, next)=> {
+    try {
+      await destroyUserProducts(req.body.id);
+      res.sendStatus(204);
+    }
+    catch(ex){
+      next(ex);
+    }
+  });
 
 // API for USER to UPDATE the quantity the product in their CART
-app.put('/api/users/cart/:id', isLoggedIn, async(req, res, next)=> {
+app.put('/api/users/cart', isLoggedIn, async(req, res, next)=> {
   try {
-    await updateUserProducts({quantity: req.body.quantity, id: req.params.id });
+    await updateUserProducts({quantity: req.body.quantity, id: req.body.id });
     res.sendStatus(204);
   }
   catch(ex){
@@ -151,7 +155,11 @@ app.post('/api/users/checkout', isLoggedIn, async(req, res, next)=> {
   let order;
   //Create Order id
   try {
-    order = await createOrder({ user_id: req.user.id});
+    order = await createOrder({ 
+      user_id: req.user.id, 
+      total_item: req.body.total_item, 
+      total_amount: req.body.total_amount,
+      final_amount: req.body.final_amount});
   }
   catch(ex){
     next(ex);
@@ -177,14 +185,44 @@ app.post('/api/users/checkout', isLoggedIn, async(req, res, next)=> {
       message: 'Products checked out successfully',
       order_id: order.id,
     });
-   
-    await destroyCart({ user_id: req.user.id });
 
   }
   catch(ex){
     next(ex);
   }
 });
+
+// API to FETCH the order
+  app.get('/api/users/order/:id', async(req, res, next)=> {
+    try {
+      res.send(await fetchOrder(req.params.id));
+    }
+    catch(ex){
+      next(ex);
+    }
+  });
+
+// API to update the final amount of the order
+  app.put('/api/users/order', isLoggedIn, async(req, res, next)=> {
+  try {
+    await updateOrderAmount({final_amount: req.body.final_amount, user_id: req.body.user_id });
+    res.sendStatus(204);
+  }
+  catch(ex){
+    next(ex);
+  }
+});
+
+// API to destroy cart of an User after checkout
+   app.delete('/api/users/dcart', isLoggedIn, async(req, res, next)=> {
+    try {
+      await destroyCart({ user_id: req.user.id });
+      res.sendStatus(204);
+    }
+    catch(ex){
+      next(ex);
+    }
+  }); 
 
 // API for ADMIN to FETCH the user details
 app.get('/api/admin/users', isLoggedIn, async(req, res, next)=> {
@@ -251,6 +289,8 @@ else {
 app.delete('/api/admin/products/:id', isLoggedIn, async(req, res, next)=> {
   if (req.user.is_admin) {
   try {
+    await admindeleteSproduct({product_id: req.params.id });
+    await admindeleteOproduct({product_id: req.params.id });
     await destroyProduct({id: req.params.id });
     res.sendStatus(204);
   }
