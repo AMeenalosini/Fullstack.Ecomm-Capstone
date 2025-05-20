@@ -1,25 +1,35 @@
-/* TODO - add your code to create a functional React component that renders a navigation bar for the different views in your single page application. You may consider conditionally rendering some options - for example 'Login' should be available if someone has not logged in yet. */
-import { NavLink } from "react-router-dom";
-import gtLogo from '../assets/gtlogo.png';
-import avatar from '../assets/avatar.png'; 
-import cart from '../assets/cart.png'; 
-import home from '../assets/home.png';
-import Searchbar from "./Searchbar";
+/*****************************************************************************************************************/
+/****     This code is to DISPLAY the Navbar with logo, search bar, navigation icons, and category links      ****/
+/*****************************************************************************************************************/
+/** Step 1: Import the required libraries/code                                                                 ***/
+/** Step 2: Fetch cart data based on logged-in user                                                            ***/
+/** Step 3: Calculate total items in cart                                                                      ***/
+/** Step 4: Display Navbar with logo, search bar, home/login/cart icons                                        ***/
+/** Step 5: Display category-based navigation links                                                            ***/
+/*****************************************************************************************************************/
+
+/** Step 1: Import the required libraries/code  ***/
+import { NavLink } from "react-router-dom";                           
+import gtLogo from '../assets/gtlogo.png';                            // GildThread logo                            
+import avatar from '../assets/avatar.png';                            // Avatar/Login icon 
+import cart from '../assets/cart.png';                                // Cart icon
+import home from '../assets/home.png';                                // Home icon
+import Searchbar from "./Searchbar";                                  // Custom search bar component
 import { useSelector } from "react-redux";
-import {  getUserid } from "../features/users/userDetailsSlice";
-import { useUsercartQuery } from "../api/ecommApi";
+import {  getUserid } from "../features/users/userDetailsSlice";      // Selector to get user ID from Redux
+import { useUsercartQuery } from "../api/ecommApi";                   // Query to fetch user cart data
 
-
+/** Step 2: Fetch cart data based on logged-in user **/
 function Navbar({ searchParameter, setSearchParameter }) {
-const userId = useSelector(getUserid);
-
+  const userId = useSelector(getUserid);                                // Get current user ID from Redux
   const { data: cartData = [] } = useUsercartQuery(userId, {
-    skip: !userId,  // Only run if user is logged in
+    skip: !userId,                                                    // Only run if user is logged in
   });
-
-    // Calculate total items in cart
+  /** Step 3: Calculate total items in cart **/
   const totalItems = cartData.reduce((sum, item) => sum + item.quantity, 0);
 
+  /** Step 4: Display Navbar with logo, search bar, home/login/cart icons   **/
+  /** Step 5: Display category-based navigation links                       **/
   return (
     <>
     <div id="navbar" className="navbar">
@@ -55,7 +65,7 @@ const userId = useSelector(getUserid);
   
       </div>
     </div>
-    <div className="category-nav">
+    <div className="category-nav">                                    
         <NavLink to="/">All Products</NavLink>
         <NavLink to="/category/scarf">Scarf</NavLink>
         <NavLink to="/category/necklace">Necklace</NavLink>

@@ -1,32 +1,42 @@
+/*****************************************************************************************************************/
+/****     This code is to ADD new product to the "products" table. Only ADMIN can add the product.            ****/
+/*****************************************************************************************************************/
+/** Step 1: Import the required libraries/code                                                                 ***/
+/** Step 2: Create a "Add Product" form in return function to receive the Input from the ADMIN                 ***/
+/** Step 3: Create a COMPONENT "AddProduct" to add the below fucntionalities                                   ***/
+/** Step 3a: Handle input change and update form data                                                          ***/
+/** Step 3b: Handle form submission and add product using API                                                  ***/
+/** Step 3c: Use Effect to navigate after successful submission                                                ***/
+/**                                                                                                            ***/
+/** NOTE: Please add new category in the array mentioned below                                                 ***/
+/**          categories = ["scarf", "necklace", "ring", "earring"];                                            ***/
+/*****************************************************************************************************************/
+
+/** Step 1: Import the required libraries/code **/    
+
 import { useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
 import { getUserDetails } from "../features/users/userDetailsSlice";
 import { useAddproductMutation } from "../api/ecommApi";
 import { useState, useEffect } from "react";
 
+/** Step 3: Create a COMPONENT "AddProduct" to add the below fucntionalities ***/
+
 function AddProduct() {
-  const navigate = useNavigate();
-  const userDetails = useSelector(getUserDetails);
-
-  const [addProduct, { isLoading, isSuccess, isError, error }] = useAddproductMutation();
-
-  const categories = ["scarf", "necklace", "ring", "earring"];
-
-  const [formData, setFormData] = useState({
+  /** Step 3a: Declare the required variables **/
+  const navigate = useNavigate();                                                         // To navigate to home page after product is added
+  const userDetails = useSelector(getUserDetails);                                        // To get current user details from Redux store
+  const [addProduct, { isLoading, isSuccess, isError, error }] = useAddproductMutation(); // Mutation hook to add product
+  const categories = ["scarf", "necklace", "ring", "earring"];                            // Static category list
+  const [formData, setFormData] = useState({                                              // State to manage form input data
     description: "",
     image_url: "",
     price: "",
     category: "",
   });
+  const [submitted, setSubmitted] = useState(false);                                      // Track if form is submitted
 
-  const [submitted, setSubmitted] = useState(false);
-
-  useEffect(() => {
-    if (isSuccess && submitted) {
-      navigate("/");
-    }
-  }, [isSuccess, submitted, navigate]);
-
+  /** Step 3a: Handle input change and update form data **/
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData((prev) => ({
@@ -35,13 +45,13 @@ function AddProduct() {
     }));
   };
 
+  /** Step 3b: Handle form submission and add product using API  **/
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (!userDetails.is_admin) {
       alert("Only admin can add products");
       return;
     }
-
     try {
       await addProduct(formData).unwrap();
       setSubmitted(true);
@@ -50,6 +60,14 @@ function AddProduct() {
     }
   };
 
+  /** Step 3c: Use Effect to navigate after successful submission  **/
+  useEffect(() => {
+    if (isSuccess && submitted) {
+      navigate("/");
+    }
+  }, [isSuccess, submitted, navigate]);
+
+  /** Step 2: Create a "Add Product" form in return function to receive the Input from the ADMIN  ***/
   return (
     <section>
       <h2>Add Product</h2>
