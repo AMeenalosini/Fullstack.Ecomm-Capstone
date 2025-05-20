@@ -9,6 +9,7 @@ import UserAccount from "./components/UserAccount";
 import OrderSummary from "./components/OrderSummary";
 import AddProductForm from "./components/AddProductForm";
 import UpdateProductForm from "./components/UpdateProductForm";
+import Category from "./components/Category";
 import UserList from "./components/UserList";
 import "./index.css"
 
@@ -29,6 +30,7 @@ function App() {
           searchParameter={searchParameter} 
           setSearchParameter={setSearchParameter} 
           />} />
+        <Route path="/" element={<ProductsList />} />
         <Route path="/profile" element={<Profile />} />
         <Route path="/products/:productId" element={<ProductDetail />} />
         <Route path="/account" element={<UserAccount />} />
@@ -37,6 +39,7 @@ function App() {
         <Route path="/addproduct" element={<AddProductForm />} />
         <Route path="/updateproduct/:id" element={<UpdateProductForm />} />
         <Route path="/userlist" element={<UserList />} />
+        <Route path="/category/:category" element={<Category />} />
       </Routes>
 
     </>
@@ -44,23 +47,5 @@ function App() {
 }
 
 export default App
-
-
-/*function App() {
-
-  return (
-    <>
-
-      <Navbar />
-      
-      <Routes>
-        <Route path="/" element={<ProductsList />} />
-        <Route path="/profile" element={<Profile />} />
-      </Routes>
-
-    </>
-  )
-}*/
-
 
 

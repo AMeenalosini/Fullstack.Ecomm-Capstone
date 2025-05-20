@@ -5,6 +5,7 @@ const {
   updateProducts,
   fetchUsers,
   fetchProducts,
+  fetchCatProducts,
   fetchSingleProduct,
   destroyProduct,
   fetchUserProducts,
@@ -25,9 +26,11 @@ const {
 
 const express = require('express');
 const morgan = require("morgan");
+//const cors = require("cors");
 
 const app = express();
 app.use(express.json());
+//app.use(express.cors());
 
 client.connect();
 
@@ -58,6 +61,16 @@ const isLoggedIn = async(req, res, next)=> {
   app.get('/api/products', async(req, res, next)=> {
     try {
       res.send(await fetchProducts());
+    }
+    catch(ex){
+      next(ex);
+    }
+  });
+
+    // API to FETCH the products based on Category
+  app.get('/api/category/:category', async(req, res, next)=> {
+    try {
+      res.send(await fetchCatProducts(req.params.category));
     }
     catch(ex){
       next(ex);
@@ -251,7 +264,8 @@ app.post('/api/admin/products', isLoggedIn, async(req, res, next)=> {
     res.status(201).send(await createProduct({ 
       description: req.body.description, 
       image_url: req.body.image_url,
-      price: req.body.price
+      price: req.body.price,
+      category: req.body.category
       }));
    }
    catch(ex){

@@ -1,5 +1,4 @@
 import { useProductsQuery, useDeleteproductMutation } from "../api/ecommApi";
-// 👉 STEP 6 - Import `useNavigate` from React Router
 import { useNavigate } from "react-router-dom";
 import { useState } from "react";
 import { useSelector } from "react-redux";
@@ -9,8 +8,8 @@ import Searchbar from "./Searchbar";
 
 
 function ProductsList({searchParameter, setSearchParameter}) {
+
     const navigate = useNavigate();
-    //const [searchParameter, setSearchParameter] = useState("");
     const userDetails = useSelector(getUserDetails);
     const [deleteProduct] = useDeleteproductMutation();
 
@@ -77,68 +76,47 @@ function ProductsList({searchParameter, setSearchParameter}) {
             </button>
         )}
         </div>
-        <div className="productList" >
-        {productsToDisplay.map((productObj) => (
-          <div
-            className="card"
-            key={productObj.id}
-            onClick={() => navigate(`/products/${productObj.id}`)}
-          >
+        <div className="product-list-container">
+          {productsToDisplay.map((productObj) => (
             <div
-              className="img"
-              style={{ backgroundImage: `url(${productObj.image_url})` }}
-            />
-            <h2>{productObj.description}</h2>
-            <div style={{ display: "flex", gap: "10px", marginTop: "10px" }} >
-            {userDetails.is_admin && (
-              <button
-              onClick={(e) => {
-                e.stopPropagation(); // Prevent navigate()
-                handleDelete(productObj.id);
-              }}
+              className="product-card"
+              key={productObj.id}
+              onClick={() => navigate(`/products/${productObj.id}`)}
             >
-              Delete
-            </button>
-             )}
-               {userDetails.is_admin && (
-              <button onClick={(e) => {
-                e.stopPropagation();
-                navigate(`/updateproduct/${productObj.id}`);
-              }}>
-                Edit
-              </button>
-             )}
-             </div>
-          </div>
-        ))}
+              <div className="product-image-box">
+                <img className="product-image" src={productObj.image_url} alt={productObj.description} />
+              </div>
+              <div className="product-info-box">
+                <h3 className="product-description">{productObj.description}</h3>
+                <p className="product-price">₹ {productObj.price}</p>
+              </div>
+              {userDetails.is_admin && (
+                <div className="product-actions">
+                  <button
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      handleDelete(productObj.id);
+                    }}
+                  >
+                    Delete
+                  </button>
+                  <button
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      navigate(`/updateproduct/${productObj.id}`);
+                    }}
+                  >
+                    Edit
+                  </button>
+                </div>
+              )}
+            </div>
+          ))}
         </div>
+
       </section>
     );
   }
   
   export default ProductsList;
 
-  /*
-   return (
-      <section className="productList">
-        <Searchbar
-          searchParameter={searchParameter}
-          setSearchParameter={setSearchParameter}
-        />
-        {productsToDisplay.map((productObj) => (
-          <div
-            className="card"
-            key={productObj.id}
-            onClick={() => navigate(`/products/${productObj.id}`)}
-          >
-            <div
-              className="img"
-              style={{ backgroundImage: `url(${productObj.image_url})` }}
-            />
-            <h2>{productObj.description}</h2>
-          </div>
-        ))}
-      </section>
-    );
-  }
-    */

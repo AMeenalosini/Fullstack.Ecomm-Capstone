@@ -12,13 +12,15 @@ function UpdateProduct() {
   const { data: product, isLoading, error } = useProductbyidQuery(id);
   const [updateProduct, { isLoading: isUpdating }] = useUpdateproductMutation();
 
+  const categories = ["scarf", "necklace", "ring", "earring"];
+
   const [formData, setFormData] = useState({
     description: "",
     image_url: "",
     price: "",
   });
 
-  const [updateComplete, setUpdateComplete] = useState(false); // ✅ Local state
+  const [updateComplete, setUpdateComplete] = useState(false); // Local state
 
   useEffect(() => {
     if (product) {
@@ -26,11 +28,12 @@ function UpdateProduct() {
         description: product.description || "",
         image_url: product.image_url || "",
         price: product.price || "",
+        category: product.category || "",
       });
     }
   }, [product]);
 
-  // ✅ Navigate after local update flag is set
+  // Navigate after local update flag is set
   useEffect(() => {
     if (updateComplete) {
       navigate("/");
@@ -99,6 +102,18 @@ function UpdateProduct() {
             step="0.01"
             required
           />
+        </label>
+        <br />
+        <label>
+          Category:
+          <select name="category" value={formData.category} onChange={handleChange} required>
+            <option value="">Select Category</option>
+            {categories.map((cat) => (
+              <option key={cat} value={cat}>
+                {cat.charAt(0).toUpperCase() + cat.slice(1)}
+              </option>
+            ))}
+          </select>
         </label>
         <br />
         <button type="submit" disabled={isUpdating}>

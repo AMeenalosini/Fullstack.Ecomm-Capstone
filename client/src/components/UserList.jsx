@@ -9,45 +9,35 @@ function UserList() {
   if (error) return <h2>Error fetching users.</h2>;
 
   return (
-    <section style={{ padding: "1rem 2rem" }}>
-      <h2>All Users</h2>
-      <table style={{ width: "100%", borderCollapse: "collapse", marginTop: "1rem" }}>
-        <thead>
-          <tr style={{ backgroundColor: "#f5f5f5" }}>
-            <th style={thStyle}>ID</th>
-            <th style={thStyle}>Name</th>
-            <th style={thStyle}>Email</th>
-            <th style={thStyle}>Phone Number</th>
-            <th style={thStyle}>Mailing Address</th>
-            <th style={thStyle}>Role</th>
+  <section className="user-section">
+    <h2>All Users</h2>
+    <table className="user-table">
+      <thead>
+        <tr className="table-header-row">
+          <th className="table-th">ID</th>
+          <th className="table-th">Name</th>
+          <th className="table-th">Email</th>
+          <th className="table-th">Phone Number</th>
+          <th className="table-th">Mailing Address</th>
+          <th className="table-th">Role</th>
+        </tr>
+      </thead>
+      <tbody>
+        {users?.map((user) => (
+          <tr key={user.id} className="table-row">
+            <td className="table-td">{user.id}</td>
+            <td className="table-td">{user.name}</td>
+            <td className="table-td">{user.email_address}</td>
+            <td className="table-td">{user.phone_number}</td>
+            <td className="table-td">{user.mailing_address}</td>
+            <td className="table-td">{user.is_admin ? "Admin" : "User"}</td>
           </tr>
-        </thead>
-        <tbody>
-          {users?.map((user) => (
-            <tr key={user.id} style={{ borderBottom: "1px solid #ccc" }}>
-              <td style={tdStyle}>{user.id}</td>
-              <td style={tdStyle}>{user.name}</td>
-              <td style={tdStyle}>{user.email_address}</td>
-              <td style={tdStyle}>{user.phone_number}</td>
-              <td style={tdStyle}>{user.mailing_address}</td>
-              <td style={tdStyle}>{user.is_admin ? "Admin" : "User"}</td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
-    </section>
-  );
+        ))}
+      </tbody>
+    </table>
+  </section>
+);
 }
 
-
-const thStyle = {
-  textAlign: "left",
-  padding: "8px",
-  borderBottom: "2px solid #ddd",
-};
-
-const tdStyle = {
-  padding: "8px",
-};
 
 export default UserList;

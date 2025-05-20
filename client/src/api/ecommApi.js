@@ -43,6 +43,10 @@ export const ecommApi = createApi({
         query: (id) => `/products/${id}`,
         providesTags: ["Product"],
       }),
+      productbycat: builder.query({
+        query: (category) => `/category/${category}`,
+        providesTags: ["Product"],
+      }),
       usercart: builder.query({
         query: () => "/users/cart",
         providesTags: ["Cart"],
@@ -135,6 +139,7 @@ export const ecommApi = createApi({
     useLoginMutation,
     useUserQuery,
     useProductbyidQuery,
+    useProductbycatQuery,
     useUsercartQuery,
     useAddtocartMutation,
     useDeletefromcartMutation,

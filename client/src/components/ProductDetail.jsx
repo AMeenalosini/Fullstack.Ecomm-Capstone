@@ -70,47 +70,38 @@ function ProductDetail() {
 
 
   return (
-    <section className="detail">
-
-        <div className="detail_intro">
-          <h2>{description}</h2>
-        </div>   
+  <section className="product-detail-wrapper">
+    <div className="product-detail-layout">
       
-       <div className="detail_body">
-        <div
-          className="img_body"
-          style={{ backgroundImage: `url(${image_url})` }}
-        />
-          <div className="flex">
-            <p>Price:</p>
-            <p>{price}</p>
-          </div>
-          
-       </div>
+      <div
+        className="product-detail-image"
+        style={{ backgroundImage: `url(${image_url})` }}
+      />
 
-       <div className="detail_intro">
-       {UserID && (
-        productadded === true ? (
+     
+      <div className="product-detail-info">
+        <p className="product-detail-description">{description}</p>
+
+        <div className="product-detail-price">
+          <p>Price:</p>
+          <p>${price}</p>
+        </div>
+
+        {UserID && (
+          <div className="product-detail-action">
             <button
-              className="addtocart_button"
-              onClick={() => handleAddToCart()}
+              className="product-detail-button"
+              onClick={handleAddToCart}
             >
-              Remove from cart
+              {productadded ? 'Remove from cart' : 'Add to cart'}
             </button>
-        ) : (
-          <button
-              className="addtocart_button"
-              onClick={() => handleAddToCart()}
-            >
-              Add to cart
-            </button>
-        )
-          )}
+          </div>
+        )}
+      </div>
+    </div>
+  </section>
+);
 
-        </div> 
-
-    </section>
-  );
 }
 
 export default ProductDetail;

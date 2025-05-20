@@ -1,5 +1,5 @@
 const pg = require('pg');
-const client = new pg.Client(process.env.DATABASE_URL || 'postgres://postgres:Ram00gcr$@localhost/ecommerce_db');
+const client = new pg.Client(process.env.DATABASE_URL || 'postgres://postgres:Ram00gcr$@localhost/capstone_db');
 const uuid = require('uuid');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
@@ -33,7 +33,8 @@ const createTables = async()=> {
             id UUID PRIMARY KEY,
             description VARCHAR(255) NOT NULL,
             image_url VARCHAR(255) NOT NULL,
-            price NUMERIC(10, 2) NOT NULL
+            price NUMERIC(10, 2) NOT NULL,
+            category VARCHAR(100) NOT NULL
         );
 
         CREATE TABLE user_products(
@@ -138,11 +139,11 @@ const fetchUsers = async()=> {
 };
 
 //CREATE Product table
-const createProduct = async({description, image_url, price})=> {
+const createProduct = async({description, image_url, price, category})=> {
   const SQL = `
-    INSERT INTO products(id, description, image_url, price) VALUES($1, $2, $3, $4) RETURNING *
+    INSERT INTO products(id, description, image_url, price, category) VALUES($1, $2, $3, $4, $5) RETURNING *
   `;
-  const response = await client.query(SQL, [uuid.v4(), description, image_url, price]);
+  const response = await client.query(SQL, [uuid.v4(), description, image_url, price, category]);
   return response.rows[0];
 };
 
@@ -152,6 +153,15 @@ const fetchProducts = async()=> {
     SELECT * FROM products;
   `;
   const response = await client.query(SQL);
+  return response.rows;
+};
+
+//FETCH Product table based on category
+const fetchCatProducts = async(category)=> {
+  const SQL = `
+    SELECT * FROM products where category = $1;
+  `;
+  const response = await client.query(SQL, [category]);
   return response.rows;
 };
 
@@ -300,6 +310,7 @@ module.exports = {
   createOrderItems,
   fetchUsers,
   fetchProducts,
+  fetchCatProducts,
   fetchSingleProduct,
   destroyProduct,
   updateUserProducts,

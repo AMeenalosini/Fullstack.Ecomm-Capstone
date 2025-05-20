@@ -10,10 +10,13 @@ function AddProduct() {
 
   const [addProduct, { isLoading, isSuccess, isError, error }] = useAddproductMutation();
 
+  const categories = ["scarf", "necklace", "ring", "earring"];
+
   const [formData, setFormData] = useState({
     description: "",
     image_url: "",
     price: "",
+    category: "",
   });
 
   const [submitted, setSubmitted] = useState(false);
@@ -82,6 +85,18 @@ function AddProduct() {
             step="0.01"
             required
           />
+        </label>
+        <br />
+        <label>
+          Category:
+          <select name="category" value={formData.category} onChange={handleChange} required>
+            <option value="">Select Category</option>
+            {categories.map((cat) => (
+              <option key={cat} value={cat}>
+                {cat.charAt(0).toUpperCase() + cat.slice(1)}
+              </option>
+            ))}
+          </select>
         </label>
         <br />
         <button type="submit" disabled={isLoading}>

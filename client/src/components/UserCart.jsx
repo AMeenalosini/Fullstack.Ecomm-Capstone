@@ -146,6 +146,13 @@ function UserCart() {
 /************************************************/
 
 function CartProduct({ product, quantity, itemTotal, cartItemId, onQuantityChange }) {
+
+  const handleViewProduct = () => {
+    navigate(`/products/${product.id}`);
+  };
+
+  const navigate = useNavigate();
+
   return (
     <div className="product_card">
       <img src={product.image_url} alt={product.name} style={{ width: "100px" }} />
@@ -158,9 +165,9 @@ function CartProduct({ product, quantity, itemTotal, cartItemId, onQuantityChang
           <button onClick={() => onQuantityChange(cartItemId, quantity + 1)}> + </button>
         </div>
         <p><strong>Item Total: ${itemTotal}</strong></p>
-        <a href={`/products/${product.id}`} target="_blank" rel="noopener noreferrer">
+        <button onClick={handleViewProduct}>
           View Product
-        </a>
+        </button>
       </div>
     </div>
   );
@@ -170,7 +177,3 @@ function CartProduct({ product, quantity, itemTotal, cartItemId, onQuantityChang
 export default UserCart;
 
 
-//<div className="product_card" style={{ borderBottom: "1px solid #ccc", marginBottom: "1rem" }}>
-
-/* <section className="detail">
-      <div className="detail_intro">*/
