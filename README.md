@@ -2,7 +2,8 @@
 
 E-commerce project Database Schema
 
-![image](https://github.com/user-attachments/assets/d6478ff1-edf7-4ab9-90be-51e1d5863841)
+![image](https://github.com/user-attachments/assets/353539c3-b2d5-4c23-82e6-4790dde316da)
+
 
 Gild & Threads Frontend wireframe
 
