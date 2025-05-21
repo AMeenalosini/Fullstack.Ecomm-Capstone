@@ -4,14 +4,23 @@
 /******************************************************************************************************/
 
 /** Step 1: Import Dependencies **/
-const pg = require('pg');
-const client = new pg.Client(process.env.DATABASE_URL || 'postgres://postgres:Ram00gcr$@localhost/capstone_db');
+require("dotenv").config(); 
+const pg = require('pg')
 const uuid = require('uuid');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const JWT = process.env.JWT || 'shhh';    // Secret for signing JWT tokens
-//require("dotenv");
 
+const connectionString =
+  process.env.DATABASE_URL || "postgres://localhost/capstone_db";
+
+const client = new pg.Client({
+  connectionString,
+  ssl:
+    process.env.NODE_ENV === "production" || process.env.NODE_ENV === "staging"
+      ? { rejectUnauthorized: false }
+      : undefined,
+});
 
 /** Step 2: Create Database Tables **/
 const createTables = async()=> {
