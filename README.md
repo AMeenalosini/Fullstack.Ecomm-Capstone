@@ -131,7 +131,8 @@ Gild & Thread Frontend Wireframe
 
 ## Screenshots
 
-![alt text](<Screenshot 2025-05-21 at 2.26.31 PM.png>)
+![alt text](<Gild & Threads Webpage Screenshot.png>)
+
 
 
 
