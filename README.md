@@ -5,6 +5,7 @@
 
 ## Table of Contents
 - [Overview](#overview)
+- [Live Demo](#live-demo)
 - [Features](#features)
 - [Tech Stack](#tech-stack)
 - [Getting Started](#getting-started)
@@ -21,7 +22,25 @@
 
 **Gild & Thread** is a full-stack e-commerce platform built as a capstone project. It simulates an online shopping experience from both a user and administrative perspective, similar to modern marketplaces like Amazon.
 
+**Deployed Site:** [https://fullstack-ecomm-capstone.onrender.com](https://fullstack-ecomm-capstone.onrender.com)
+
 The app is designed with scalable functionality in mind, following a tiered MVP strategy. It allows non-logged-in users to browse products, registered users to manage a persistent cart and checkout, and admins to manage inventory and users.
+
+---
+
+## Live Demo
+
+Try it here: [https://fullstack-ecomm-capstone.onrender.com](https://fullstack-ecomm-capstone.onrender.com)
+
+Use the following test credentials for exploring:
+
+Admin
+Email: sri@gmail.com
+Password: Sri1
+
+User
+Email: muk@gmail.com
+Password: Muk1
 
 ---
 
@@ -74,8 +93,8 @@ The app is designed with scalable functionality in mind, following a tiered MVP 
 1. Clone the repo:
 
    ```bash
-   git clone https://github.com/your-username/gild-and-thread.git
-   cd gild-and-thread
+   git clone git@github.com:AMeenalosini/Fullstack.Ecomm-Capstone.git
+   cd Fullstack.Ecomm-Capstone
 
 2. Install dependencies:
     -> npm install  bcryptjs                  
@@ -85,6 +104,11 @@ The app is designed with scalable functionality in mind, following a tiered MVP 
                     morgan
                     pg
                     uuid
+
+3. Update 'db.js' file as below
+   -> const client = new pg.Client(process.env.DATABASE_URL || 'postgres://localhost/capstone_db');
+
+4. Remove "CORS" from 'index.js' file
 
 ---
 
@@ -106,7 +130,7 @@ Gild & Thread Frontend Wireframe
 
 ## Database Seeding
 
-1. Create DataBase in postgres- ecommerce_db (refer server/db.js)
+1. Create DataBase in postgres- capstone_db (refer server/db.js)
 2. To seed the DataBase go to server folder in termminal- type 'npm run seed'
 
 ---
