@@ -1,25 +1,23 @@
+/******************************************************************************************************/
+/****     Database Initialization Script for Gild & Threads E-Commerce Capstone Project           ****/
+/****     Populates the PostgreSQL DB with Sample Users and Products                              ****/
+/******************************************************************************************************/
 const {
     client,
     createTables,
     createUsers,
     createProduct,
-    fetchUsers,
-    fetchProducts,
-    fetchUserProducts,
-    createUserProducts,
-    destroyUserProducts,
-    authenticate,
-    findUserWithToken,
-    signToken
     } = require("./db");
   
   const init = async () => {
     await client.connect();
     console.log("connected to database");
-  
+
+  // Create tables (DROP IF EXISTS → CREATE)
     createTables();
     console.log("tables created ");
 
+    // Create sample users
       const [user1, user2, user3] = await Promise.all([
         createUsers({
           username: "muk@gmail.com",
@@ -71,8 +69,118 @@ const {
           ph_no: 65474586,
           b_add: "135, Bowers avenue, San Jose, CA"
       }),
-      ]);
+      createUsers({
+          username: "john.doe@example.com",
+          password: "John123",
+          admin: false,
+          name: "John Doe",
+          e_add: "john.doe@example.com",
+          m_add: "123 Maple St, Springfield, IL",
+          ph_no: 5551234567,
+          b_add: "456 Oak St, Springfield, IL"
+        }),
 
+      createUsers({
+          username: "jane.smith@example.com",
+          password: "Jane123",
+          admin: false,
+          name: "Jane Smith",
+          e_add: "jane.smith@example.com",
+          m_add: "789 Pine St, Austin, TX",
+          ph_no: 5559876543,
+          b_add: "321 Cedar St, Austin, TX"
+        }),
+
+      createUsers({
+          username: "alex.lee@example.com",
+          password: "Alex123",
+          admin: true,
+          name: "Alex Lee",
+          e_add: "alex.lee@example.com",
+          m_add: "456 Elm St, Denver, CO",
+          ph_no: 5556789123,
+          b_add: "654 Birch St, Denver, CO"
+        }),
+
+      createUsers({
+          username: "emma.jones@example.com",
+          password: "Emma123",
+          admin: false,
+          name: "Emma Jones",
+          e_add: "emma.jones@example.com",
+          m_add: "159 Oakridge Dr, Orlando, FL",
+          ph_no: 5552468101,
+          b_add: "753 Pineview Dr, Orlando, FL"
+        }),
+
+      createUsers({
+          username: "michael.brown@example.com",
+          password: "Mike123",
+          admin: false,
+          name: "Michael Brown",
+          e_add: "michael.brown@example.com",
+          m_add: "908 Cherry Ln, Seattle, WA",
+          ph_no: 5551357913,
+          b_add: "120 Walnut Ave, Seattle, WA"
+        }),
+
+      createUsers({
+          username: "olivia.taylor@example.com",
+          password: "Olivia123",
+          admin: false,
+          name: "Olivia Taylor",
+          e_add: "olivia.taylor@example.com",
+          m_add: "333 Seaside Blvd, Miami, FL",
+          ph_no: 5551122334,
+          b_add: "444 Bayshore Dr, Miami, FL"
+        }),
+
+      createUsers({
+          username: "william.clark@example.com",
+          password: "Will123",
+          admin: false,
+          name: "William Clark",
+          e_add: "william.clark@example.com",
+          m_add: "222 Brookside Dr, Portland, OR",
+          ph_no: 5556677889,
+          b_add: "333 Highland Ave, Portland, OR"
+        }),
+
+      createUsers({
+          username: "ava.martin@example.com",
+          password: "Ava123",
+          admin: false,
+          name: "Ava Martin",
+          e_add: "ava.martin@example.com",
+          m_add: "144 Sunrise Ln, Tucson, AZ",
+          ph_no: 5557788990,
+          b_add: "899 Sunset Blvd, Tucson, AZ"
+        }),
+
+      createUsers({
+          username: "james.wilson@example.com",
+          password: "James123",
+          admin: true,
+          name: "James Wilson",
+          e_add: "james.wilson@example.com",
+          m_add: "310 Mountain View Rd, Boulder, CO",
+          ph_no: 5554455667,
+          b_add: "760 Valley Rd, Boulder, CO"
+        }),
+
+      createUsers({
+          username: "sophia.davis@example.com",
+          password: "Sophia123",
+          admin: false,
+          name: "Sophia Davis",
+          e_add: "sophia.davis@example.com",
+          m_add: "998 Riverbend Way, Charlotte, NC",
+          ph_no: 5559988776,
+          b_add: "109 Greenway Dr, Charlotte, NC"
+        }),
+
+      ]);
+    // Create sample products
       const [product1, product2, product3, product4] = await Promise.all([
         createProduct({
             description: "3 Gold colored studded rings", 
@@ -182,6 +290,140 @@ const {
          price: 65.00,
          category: "earring"
     }),
+    createProduct({
+        description: "Gold ring with 4 sides craved",
+        image_url: "https://images.unsplash.com/photo-1655707063473-3ee2e5b5eeb8?q=80&w=2670&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+        price: 120.00,
+        category: "ring"
+    }),
+    createProduct({
+        description: "Close-up of a silver ring with intricate design",
+        image_url: "https://images.unsplash.com/photo-1543294001-f7cd5d7fb516",
+        price: 95.00,
+        category: "ring"
+    }),
+    createProduct({
+        description: "Couple of ring with Diamond in the center",
+        image_url: "https://images.unsplash.com/photo-1662376992957-8e3a5cf91c69?q=80&w=2671&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+        price: 400.00,
+        category: "ring"
+    }),
+    createProduct({
+        description: "Small stones diamond ring",
+        image_url: "https://images.unsplash.com/photo-1679156271376-3a69ba96a2dc?q=80&w=2480&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+        price: 300.00,
+        category: "ring"
+    }),
+    createProduct({
+        description: "Silver ring with gemstones",
+        image_url: "https://images.unsplash.com/photo-1561995734-ef4b62bb6586?q=80&w=2670&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+        price: 100.00,
+        category: "ring"
+    }),
+    createProduct({
+         description: "Diamond hoop earring", 
+         image_url: "https://plus.unsplash.com/premium_photo-1680181362119-5c9bf196805f?q=80&w=2680&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D" , 
+         price: 180.00,
+         category: "earring"
+    }),
+     createProduct({
+         description: "Crystal drop earring", 
+         image_url: "https://images.unsplash.com/photo-1674329042475-de1a95b4ca62?q=80&w=2674&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D" , 
+         price: 100.00,
+         category: "earring"
+    }),
+    createProduct({
+         description: "Green emrald with diamond around earring", 
+         image_url: "https://plus.unsplash.com/premium_photo-1681276170598-8ad7feaf918e?q=80&w=2574&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D" , 
+         price: 600.00,
+         category: "earring"
+    }),
+    createProduct({
+         description: "Pearl earring", 
+         image_url: "https://images.unsplash.com/photo-1583167616102-d8d4b7d02c6c?q=80&w=2662&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D" , 
+         price: 600.00,
+         category: "earring"
+    }),
+     createProduct({
+         description: "Red & white earring", 
+         image_url: "https://images.unsplash.com/photo-1671642883395-0ab89c3ac890?q=80&w=2666&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D" , 
+         price: 370.00,
+         category: "earring"
+    }),
+    createProduct({
+         description: "Antique Jhumka earrings", 
+         image_url: "https://images.unsplash.com/photo-1714733831162-0a6e849141be?q=80&w=2635&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D" , 
+         price: 250.00,
+         category: "earring"
+    }),
+    createProduct({
+         description: "Necklace with heart shaped pendant", 
+         image_url: "https://plus.unsplash.com/premium_photo-1681276170092-446cd1b5b32d?q=80&w=2576&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D" , 
+         price: 609.00,
+         category: "necklace"
+    }),
+    createProduct({
+         description: "Luxury gold crown necklace", 
+         image_url: "https://images.unsplash.com/photo-1685970731194-e27b477e87ba?q=80&w=2576&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D" , 
+         price: 899.00,
+         category: "necklace"
+    }),
+    createProduct({
+         description: "White & Green gemstones necklace", 
+         image_url: "https://images.unsplash.com/photo-1721103418939-5112f0ccfac8?q=80&w=2670&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D" , 
+         price: 754.00,
+         category: "necklace"
+    }),
+     createProduct({
+         description: "White pearl necklace with stone pendant", 
+         image_url: "https://images.unsplash.com/photo-1515562141207-7a88fb7ce338?q=80&w=2670&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D" , 
+         price: 476.00,
+         category: "necklace"
+    }),
+     createProduct({
+         description: "Antique necklace with earring", 
+         image_url: "https://images.unsplash.com/photo-1721034917345-d17c5405ead0?q=80&w=2670&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D" , 
+         price: 1000.00,
+         category: "necklace"
+    }),
+     createProduct({
+         description: "Blue, white & red scarf", 
+         image_url: "https://images.unsplash.com/photo-1635417198137-75d31b8045e2?q=80&w=2565&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D" , 
+         price: 100.00,
+         category: "scarf"
+    }),
+     createProduct({
+         description: "Blue scarf with gold speckles", 
+         image_url: "https://plus.unsplash.com/premium_photo-1672337320487-c8512299699f?q=80&w=2664&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D" , 
+         price: 190.00,
+         category: "scarf"
+    }),
+      createProduct({
+         description: "Brown silk scarf", 
+         image_url: "https://images.unsplash.com/photo-1619043599502-b078bb23e34f?q=80&w=2670&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D" , 
+         price: 150.00,
+         category: "scarf"
+    }),
+      createProduct({
+         description: "Brown silk scarf", 
+         image_url: "https://images.unsplash.com/photo-1619043599502-b078bb23e34f?q=80&w=2670&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D" , 
+         price: 150.00,
+         category: "scarf"
+    }),
+       createProduct({
+         description: "Multicolored strap scarf", 
+         image_url: "https://images.unsplash.com/photo-1562176603-48b2cf0d96b3?q=80&w=2273&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D" , 
+         price: 150.00,
+         category: "scarf"
+    }),
+     createProduct({
+         description: "Blue & white floral scarf", 
+         image_url: "https://images.unsplash.com/photo-1600166942889-b768d22cd037?q=80&w=2574&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D" , 
+         price: 140.00,
+         category: "scarf"
+    }),
+
+    
   ]);
   
     await client.end();

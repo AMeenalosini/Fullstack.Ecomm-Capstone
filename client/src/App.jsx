@@ -1,5 +1,15 @@
+/****************************************************************************************************************/
+/****     This is the main APP component responsible for routing and rendering all core components           ****/
+/****************************************************************************************************************/
+/** Step 1: Import required dependencies and components                                                        **/
+/** Step 2: Maintain shared state (e.g., search parameter) using useState                                      **/
+/** Step 3: Render Navbar and define application routes using React Router                                     **/
+/****************************************************************************************************************/
+
+/** Step 1: Import dependencies **/
 import { useState } from "react";
 import { Routes, Route } from "react-router-dom";
+/** Step 1: Import application components **/
 import ProductsList from "./components/ProductsList";
 import Profile from "./components/Profile";
 import Navbar from "./components/NavBar";
@@ -13,10 +23,12 @@ import Category from "./components/Category";
 import UserList from "./components/UserList";
 import "./index.css"
 
+/** Step 2: Define main App component **/
 function App() {
 
   const [searchParameter, setSearchParameter] = useState("");
 
+  /** Step 3: Return JSX with Navbar and Routes **/
   return (
     <>
       <Navbar 
@@ -30,7 +42,6 @@ function App() {
           searchParameter={searchParameter} 
           setSearchParameter={setSearchParameter} 
           />} />
-        <Route path="/" element={<ProductsList />} />
         <Route path="/profile" element={<Profile />} />
         <Route path="/products/:productId" element={<ProductDetail />} />
         <Route path="/account" element={<UserAccount />} />

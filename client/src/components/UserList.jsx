@@ -1,13 +1,24 @@
+/***************************************************************************************************************/
+/****     This component renders the ADMIN USER LIST TABLE for all registered users                         ****/
+/***************************************************************************************************************/
+/** Step 1: Import the required RTK Query hook to fetch user data from backend                               ***/
+/** Step 2: Fetch all users using useAdminusersQuery (accessible only by admin users)                        ***/
+/** Step 3: Handle loading and error states gracefully                                                        ***/
+/** Step 4: Display users in a styled table with fields: ID, Name, Email, Phone, Mailing Address, and Role   **/
+/***************************************************************************************************************/
+
+/** Step 1: Import the required RTK Query hook **/
 import { useAdminusersQuery } from "../api/ecommApi";
 
-
+/** Step 2: Create the UserList component **/
 function UserList() {
+  // Use RTK Query to fetch all registered users (admin access required)
   const { data: users, isLoading, error } = useAdminusersQuery();
-
-  console.log("adminuser:" , users )
+  /** Step 3: Handle loading and error states **/
   if (isLoading) return <h2>Loading users...</h2>;
   if (error) return <h2>Error fetching users.</h2>;
 
+  /** Step 4: Render the users table **/
   return (
   <section className="user-section">
     <h2>All Users</h2>

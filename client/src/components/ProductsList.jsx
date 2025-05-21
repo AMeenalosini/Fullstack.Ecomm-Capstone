@@ -1,25 +1,26 @@
+/*****************************************************************************************************************/
+/****     This code is to RENDER ALL PRODUCTS and provide admin with edit/delete options                      ****/
+/*****************************************************************************************************************/
+/** Step 1: Import the required libraries/code                                                                 ***/
+/** Step 2: Create a functional component "ProductsList" to display all products                               ***/
+/** Step 3: Filter products based on search input                                                              ***/
+/** Step 4: Handle delete operation for admin users                                                            ***/
+/** Step 5: Render product cards and admin actions (edit/delete buttons)                                       ***/
+/*****************************************************************************************************************/
+
+/** Step 1: Import the required libraries/code  ***/
 import { useProductsQuery, useDeleteproductMutation } from "../api/ecommApi";
 import { useNavigate } from "react-router-dom";
-import { useState } from "react";
 import { useSelector } from "react-redux";
 import { getUserDetails } from "../features/users/userDetailsSlice";
-//component
-import Searchbar from "./Searchbar";
 
-
-function ProductsList({searchParameter, setSearchParameter}) {
-
-    const navigate = useNavigate();
-    const userDetails = useSelector(getUserDetails);
-    const [deleteProduct] = useDeleteproductMutation();
-
-    console.log("userDetails", userDetails)
-  
-    const { data, error, isLoading } = useProductsQuery();
+/** Step 2: Create a functional component "ProductsList" to display all products  ***/
+function ProductsList({ searchParameter, setSearchParameter }) {
+  const navigate = useNavigate();                                                           // For navigation
+  const userDetails = useSelector(getUserDetails);                                          // Get user info
+  const [deleteProduct] = useDeleteproductMutation();                                       // Mutation to delete product
+  const { data, error, isLoading } = useProductsQuery();                                    // Fetch all products
     
-    console.log(data)
-    console.log(error)
-
     if (isLoading) {
       return (
         <section>
@@ -36,6 +37,7 @@ function ProductsList({searchParameter, setSearchParameter}) {
       );
     }
   
+    /** Step 3: Filter products based on search input ***/
     const productsToDisplay =
       searchParameter !== "" && data
         ? data.filter(
@@ -44,6 +46,7 @@ function ProductsList({searchParameter, setSearchParameter}) {
           )
         : data;
 
+    /** Step 4: Handle delete operation for admin users ***/   
     const handleDelete = async (id) => {
             try {
               await deleteProduct(id).unwrap(); 
@@ -53,9 +56,8 @@ function ProductsList({searchParameter, setSearchParameter}) {
               alert("Failed to delete product");
           }
         };
-
-    
   
+    /** Step 5: Render product cards and admin actions (edit/delete buttons  ***/
     return (
       <section>
         <div 

@@ -1,20 +1,32 @@
-/* TODO - add your code to create a functional React component that renders a registration form */
+/*****************************************************************************************************************/
+/****     This code is to RENDER the LOGIN & REGISTRATION form for new/existing users                         ****/
+/*****************************************************************************************************************/
+/** Step 1: Import the required libraries/code                                                                 ***/
+/** Step 2: Create a functional component "Profile"                                                            ***/
+/** Step 3: Declare the required state variables and hooks                                                     ***/
+/** Step 4: Handle input changes for registration and login forms                                              ***/
+/** Step 5: Submit registration form and store token                                                           ***/
+/** Step 6: Submit login form and store token                                                                  ***/
+/** Step 7: Fetch user details if token is present and redirect to account                                     ***/
+/** Step 8: Render Registration and Login forms with basic validation                                          ***/
+/*****************************************************************************************************************/
+
+/** Step 1: Import the required libraries/code ***/
 import { useState, useEffect } from "react";
 import { useDispatch } from "react-redux";
 import { useLoginMutation, useRegisterMutation, useUserQuery } from "../api/ecommApi";
 import { useNavigate } from "react-router-dom";
 import { setUserDetails } from "../features/users/userDetailsSlice";
 
+/** Step 2: Create a functional component "Profile" ***/
 export default function Profile() {
-  const [register] = useRegisterMutation();
-
-  const [login] = useLoginMutation();
-
-  const navigate = useNavigate();
-  const dispatch = useDispatch();
-
-  const [showPassword, setShowPassword] = useState(false);
-
+  /** Step 3: Declare the required state variables and hooks ***/
+  const [register] = useRegisterMutation();                    // Register API
+  const [login] = useLoginMutation();                          // Login API
+  const navigate = useNavigate();                              // For navigation
+  const dispatch = useDispatch();                              // For Redux state
+  const [showPassword, setShowPassword] = useState(false);    // Toggle password visibility
+  /** Step 3a: Input state variables **/
   const [name, setName] = useState("");
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
@@ -22,14 +34,13 @@ export default function Profile() {
   const [ph_no, setPhone] = useState("");
   const [m_add, setMaddress] = useState("");
   const [b_add, setBaddress] = useState("");
-    
+  /** Step 3b: Login form state **/  
   const [inputpassword, setIpPassword] = useState("");
   const [inputuser, setIpUser] = useState("");
-  const [errors, setErrors] = useState(null);
+  const [errors, setErrors] = useState(null);               // Error handling
+  const [authToken, setAuthToken] = useState(null);         // Local token state
 
-  const [authToken, setAuthToken] = useState(null);
-
-
+/** Step 4: Handle changes in registration form **/
   const handleRegChange = (event) => {
     if (errors) {
       setErrors(null);
@@ -55,6 +66,7 @@ export default function Profile() {
     
   };
 
+/** Step 4b: Handle changes in login form **/
   const handleIpChange = (event) => {
     if (errors) {
       setErrors(null);
@@ -69,62 +81,48 @@ export default function Profile() {
     } 
   };
 
+/** Step 5: Handle registration form submit **/
   const handleSubmit = async (event) => {
     event.preventDefault();
-
-
     const { error, data } = await register({ username, password, name, email_address: e_add, mailing_address: m_add, phone_number: ph_no, billing_address: b_add });
-  
-    console.log("Register", data);
-
-    if (error) {
-      setErrors("Something went wrong", error);
+      if (error) {
+        setErrors("Something went wrong", error);
       return;
     }
-
-  // Save token
+  // Store token and trigger user query
     localStorage.setItem("token", data.token);
-    setAuthToken(data.token); // trigger user query
-
+    setAuthToken(data.token); 
   };
 
+/** Step 6: Handle login form submit **/
   const handleLogin = async (event) => {
     event.preventDefault();
-
     const { error, data } = await login({ username : inputuser, password : inputpassword });
-
     if (error) {
       setErrors("Something went wrong", error);
       return;
     }
-
-     // Save token
+    // Store token and trigger user query
     localStorage.setItem("token", data.token);
-    setAuthToken(data.token); // trigger user query
-
-    console.log("Login", data)
-    console.log("token", data.token)
-    console.log("Authtoken", authToken)
-
+    setAuthToken(data.token); 
   };
 
+/** Step 7: Fetch user details if token exists **/
   const { data: userData, isLoading: isUserLoading, error: userError } = useUserQuery(undefined, {
     skip: !localStorage.getItem("token"), // Skip fetching until token is set
   });
 
   useEffect(() => {
-
     if (userError) {
       console.error("User fetch error:", userError);
     }
-
     if (userData) {
-      console.log("userData:", userData)
-      dispatch(setUserDetails(userData));
-      navigate("/account"); 
+      dispatch(setUserDetails(userData));   // Save to Redux
+      navigate("/account");                 // Redirect to Account page
     }
   }, [userData, userError, dispatch, navigate]);
 
+  /** Step 8: Render forms **/
   return (
     <div className = "wrapperStyle">
     <section className="sectionStyle">

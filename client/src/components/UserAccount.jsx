@@ -1,3 +1,13 @@
+/*****************************************************************************************************************/
+/****     This code is to render USER ACCOUNT PAGE with user details, logout, and order history               ****/
+/*****************************************************************************************************************/
+/** Step 1: Import the required libraries/code                                                                 ***/
+/** Step 2: Fetch user details and order data using RTK Query                                                  ***/
+/** Step 3: Handle loading and error states                                                                    ***/
+/** Step 4: Display user information and orders with created_at date                                           ***/
+/*****************************************************************************************************************/
+
+/** Step 1: Import the required libraries/code  ***/
 import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { setUserDetails, initialState, resetUserDetails } from "../features/users/userDetailsSlice";
@@ -7,22 +17,21 @@ import { ecommApi } from "../api/ecommApi";
 import { useEffect } from "react";
 import { useUserQuery, useFetchorderQuery } from "../api/ecommApi";
 
+/** Step 2: Create the UserAccount component **/
 function UserAccount() {
-  const userDetails = useSelector(getUserDetails);
+  const userDetails = useSelector(getUserDetails);          // Get user details from Redux store
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
-  const { data, isLoading, error } = useUserQuery();
+  const { data, isLoading, error } = useUserQuery();        // Fetch current user data
 
   const { data: orders, isLoading: ordersLoading, error: ordersError } = useFetchorderQuery(data?.id, {
     skip: !data?.id,
-  });
+  });                                                         // Only fetch orders if user ID is available
 
-  console.log("ordersError", ordersError)
-
-  useEffect(() => {
+    useEffect(() => {
     if (data) {
-      dispatch(setUserDetails(data));
+      dispatch(setUserDetails(data));                         // Update user details in Redux
     }
   }, [data, dispatch]);
 
@@ -37,15 +46,16 @@ function UserAccount() {
   const { id, username, password, is_admin, name, email_address, mailing_address, phone_number, billing_address } = data;
 
 
-
+/** Step 3: Logout functionality **/
   const logout = () => {
     console.log("Logging out...");
-    localStorage.removeItem("token"); // Clear token
-    dispatch(resetUserDetails());     // Reset user state
-    dispatch(ecommApi.util.resetApiState()); // Clear API cache
-    navigate("/"); // Redirect
+    localStorage.removeItem("token");                         // Clear Auth token
+    dispatch(resetUserDetails());                             // Reset user state
+    dispatch(ecommApi.util.resetApiState());                  // Clear API cache
+    navigate("/");                                            // Redirect to HOME page
   };
 
+  /** Step 4: Render user details and orders **/
   return (
     <section className="detail">
       <div className="detail_intro">
@@ -69,14 +79,22 @@ function UserAccount() {
             {ordersError && <p>Error fetching orders.</p>}
             {!ordersLoading && orders?.length === 0 && <p>No orders found.</p>}
         <ul>
-             {orders?.map(order => (
-               <li key={order.id}>
-                   <strong>Order ID:</strong> {order.id} | 
-                   <strong> Items:</strong> {order.total_item} | 
-                   <strong> Amount:</strong> ${order.final_amount}
-                </li>
-              ))}
-         </ul>
+          {orders?.map(order => {
+            const createdAt = new Date(order.created_at); // Convert timestamp string to Date object
+            const formattedDate = createdAt.toLocaleDateString();
+            const formattedTime = createdAt.toLocaleTimeString();
+
+            return (
+              <li key={order.id}>
+                <strong>Order ID:</strong> {order.id} |{" "}
+                <strong>Items:</strong> {order.total_item} |{" "}
+                <strong>Amount:</strong> ${order.final_amount} |{" "}
+                <strong>Date:</strong> {formattedDate} |{" "}
+                <strong>Time:</strong> {formattedTime}
+              </li>
+            );
+          })}
+        </ul>
       </div>
     </section>
   );

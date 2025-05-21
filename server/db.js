@@ -1,13 +1,19 @@
+/******************************************************************************************************/
+/****     Node.js + PostgreSQL Backend for E-Commerce Capstone Project - Gild & Threads            ****/
+/****     Includes User Auth, Products, Cart, Orders, and Admin Actions                            ****/
+/******************************************************************************************************/
+
+/** Step 1: Import Dependencies **/
 const pg = require('pg');
 const client = new pg.Client(process.env.DATABASE_URL || 'postgres://postgres:Ram00gcr$@localhost/capstone_db');
 const uuid = require('uuid');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
-const JWT = process.env.JWT || 'shhh';
+const JWT = process.env.JWT || 'shhh';    // Secret for signing JWT tokens
 //require("dotenv");
 
 
-//CREATE TABLES
+/** Step 2: Create Database Tables **/
 const createTables = async()=> {
   const SQL = `
         DROP TABLE IF EXISTS order_items;   
@@ -64,12 +70,14 @@ const createTables = async()=> {
   await client.query(SQL);
 };
 
+/** Step 3: Authentication Helpers **/
+
 //GENERATE token using user_id during REGISTER
 const signToken = async (user_id) => {
   return jwt.sign({ id: user_id }, JWT);
 };
 
-//AUTHENTICATE the user with JWT sign
+// Authenticate user by username/password and return JWT
 const authenticate = async({ username, password })=> {
   const SQL = `
     SELECT id, username, password FROM users WHERE username=$1;
@@ -111,7 +119,9 @@ const findUserWithToken = async(token) => {
 
 }
 
-//CREATE Users table
+/** Step 4: User Functions **/
+
+//CREATE a new user
 async function createUsers({username, password, admin = false, name, e_add, m_add, ph_no, b_add}) {
   const SQL = `INSERT INTO users(id, username, password, is_admin, name, email_address, mailing_address, phone_number, billing_address) 
                 VALUES($1, $2, $3, $4, $5, $6, $7, $8, $9) RETURNING *`;
@@ -129,7 +139,7 @@ async function createUsers({username, password, admin = false, name, e_add, m_ad
   return dbResponse.rows[0];
 }
 
-//FETCH Users table
+// Fetch all users
 const fetchUsers = async()=> {
   const SQL = `
     SELECT * FROM users;
@@ -138,7 +148,9 @@ const fetchUsers = async()=> {
   return response.rows;
 };
 
-//CREATE Product table
+/** Step 5: Product Functions **/
+
+// Create a new product
 const createProduct = async({description, image_url, price, category})=> {
   const SQL = `
     INSERT INTO products(id, description, image_url, price, category) VALUES($1, $2, $3, $4, $5) RETURNING *
@@ -147,7 +159,7 @@ const createProduct = async({description, image_url, price, category})=> {
   return response.rows[0];
 };
 
-//FETCH Product table
+// Fetch all products
 const fetchProducts = async()=> {
   const SQL = `
     SELECT * FROM products;
@@ -156,7 +168,7 @@ const fetchProducts = async()=> {
   return response.rows;
 };
 
-//FETCH Product table based on category
+// Fetch products by category
 const fetchCatProducts = async(category)=> {
   const SQL = `
     SELECT * FROM products where category = $1;
@@ -165,7 +177,7 @@ const fetchCatProducts = async(category)=> {
   return response.rows;
 };
 
-//FETCH Single Product from table
+// Fetch single product
 const fetchSingleProduct = async(id)=> {
   const SQL = `
     SELECT * FROM products where id = $1;
@@ -174,7 +186,7 @@ const fetchSingleProduct = async(id)=> {
   return response.rows[0];
 };
 
-//UPDATE Product table
+// Update product fields
 const updateProducts = async( id, fields )=> {
 
   const keys = Object.keys(fields); //keys = ['description','image_url', 'price'];
@@ -195,7 +207,7 @@ const updateProducts = async( id, fields )=> {
   return response.rows[0];
 };
 
-//DELETE a Product from table
+// Delete a product
 const destroyProduct = async({ id })=> {
   const SQL = `
     DELETE FROM products WHERE id=$1;
@@ -203,7 +215,9 @@ const destroyProduct = async({ id })=> {
   await client.query(SQL, [id]);
 };
 
-//CREATE UserProducts table
+/** Step 6: Cart Functions **/
+
+// Add product to user's cart
 const createUserProducts = async({ user_id, product_id, quantity})=> {
   const SQL = `
     INSERT INTO user_products(id, user_id, product_id, quantity) VALUES($1, $2, $3, $4) RETURNING *
@@ -212,7 +226,7 @@ const createUserProducts = async({ user_id, product_id, quantity})=> {
   return response.rows[0];
 };
 
-//FETCH UserProducts table
+// Get user's cart items
 const fetchUserProducts = async(user_id)=> {
   const SQL = `
     SELECT * FROM user_products where user_id = $1;
@@ -221,7 +235,7 @@ const fetchUserProducts = async(user_id)=> {
   return response.rows;
 };
 
-//UPDATE UserProducts table
+// Update quantity in cart
 const updateUserProducts  = async({ quantity, id })=> {
   const SQL = `
     UPDATE user_products SET quantity = $1 where id = $2 RETURNING *
@@ -230,7 +244,7 @@ const updateUserProducts  = async({ quantity, id })=> {
   return response.rows[0];
 };
 
-//DELETE one product from UserProducts table
+// Remove one item from cart
 const destroyUserProducts = async(id)=> {
   const SQL = `
     DELETE FROM user_products WHERE id=$1
@@ -238,7 +252,7 @@ const destroyUserProducts = async(id)=> {
   await client.query(SQL, [id]);
 };
 
-//DELETE user cart from the UserProducts table
+// Empty user's cart
 const destroyCart = async({ user_id })=> {
   const SQL = `
     DELETE FROM user_products WHERE user_id=$1
@@ -246,7 +260,9 @@ const destroyCart = async({ user_id })=> {
   await client.query(SQL, [user_id]);
 };
 
-//CREATE Order table
+/** Step 7: Order Functions **/
+
+// Create new order
 const createOrder = async({ user_id, total_item, total_amount, final_amount})=> {
   const SQL = `
     INSERT INTO orders(id, user_id, total_item, total_amount, final_amount) VALUES($1, $2, $3, $4, $5) RETURNING *
@@ -255,7 +271,7 @@ const createOrder = async({ user_id, total_item, total_amount, final_amount})=> 
   return response.rows[0];
 };
 
-//FETCH Order from Order table
+// Get user's orders
 const fetchOrder = async(id)=> {
   const SQL = `
     SELECT * FROM orders where user_id = $1;
@@ -264,7 +280,7 @@ const fetchOrder = async(id)=> {
   return response.rows;
 };
 
-//UPDATE final total in the Order table
+// Update final total of an order
 const updateOrderAmount  = async({ final_amount, user_id })=> {
   const SQL = `
     UPDATE orders SET final_amount = $1 where user_id = $2 RETURNING *
@@ -273,7 +289,7 @@ const updateOrderAmount  = async({ final_amount, user_id })=> {
   return response.rows[0];
 };
 
-//CREATE OrderItems table
+// Create order item
 const createOrderItems = async({ order_id, product_id, price, quantity })=> {
   const SQL = `
     INSERT INTO order_items(id, order_id, product_id, price, quantity) VALUES($1, $2, $3, $4, $5) RETURNING *
@@ -282,7 +298,9 @@ const createOrderItems = async({ order_id, product_id, price, quantity })=> {
   return response.rows[0];
 };
 
-//DELETE a product from UserProducts table by the admin
+/** Step 8: Admin Utilities **/
+
+// Admin deletes product from user_products
 const admindeleteSproduct = async({product_id})=> {
   const SQL = `
     DELETE FROM user_products WHERE product_id = $1;
@@ -290,7 +308,7 @@ const admindeleteSproduct = async({product_id})=> {
   await client.query(SQL, [product_id]);
 };
 
-//DELETE a product from order_items table by the admin
+// Admin deletes product from order_items
 const admindeleteOproduct = async({product_id})=> {
   const SQL = `
     DELETE FROM order_items WHERE product_id = $1;
@@ -298,6 +316,7 @@ const admindeleteOproduct = async({product_id})=> {
   await client.query(SQL, [product_id]);
 };
 
+/** Step 9: Export All Functions **/
 module.exports = {
   client,
   createTables,

@@ -1,25 +1,29 @@
-import { useDispatch } from "react-redux";
+/*****************************************************************************************************************/
+/****     This code is to render ORDER SUMMARY PAGE to place the order                                        ****/
+/*****************************************************************************************************************/
+/** Step 1: Import the required libraries/code                                                                 ***/
+/** Step 2: Create an "OrderSummary" component to display order details and user shipping info                 ***/
+/** Step 3: Handle "Place Order" functionality                                                                ***/
+/*****************************************************************************************************************/
+
+/** Step 1: Import the required libraries/code  ***/
 import { useNavigate } from "react-router-dom";
-import { setUserDetails, initialState, resetUserDetails } from "../features/users/userDetailsSlice";
 import { useSelector } from "react-redux";
 import { getUserDetails } from "../features/users/userDetailsSlice";
-import { ecommApi } from "../api/ecommApi";
-import { useEffect } from "react";
-import { useUserQuery } from "../api/ecommApi";
 import { useLocation } from "react-router-dom";
 
+/** Step 2: Create an "OrderSummary" component to display order details and user shipping info  ***/
 function OrderSummary() {
-  const userDetails = useSelector(getUserDetails);
-  const navigate = useNavigate();
-  const { state } = useLocation(); // receives state from navigate
-  const { total, totalItems, finaltotal, tax, orderId } = state || {};
-  console.log("userDetails", userDetails)
+  const userDetails = useSelector(getUserDetails);                      // Get user details from Redux
+  const navigate = useNavigate();                                       // For redirection after placing order
+  const { state } = useLocation();                                      // Get state passed from previous page
+  const { total, totalItems, finaltotal, tax, orderId } = state || {}; // Destructure state values
+  const taxrate = total * tax;                                         // Calculate tax amount
 
-  const taxrate = total * tax;
-
+/** Step 3: Handle "Place Order" functionality  ***/
   const handlePlaceOrder = () => {
-    alert("Order Placed!");
-    navigate("/"); // Or navigate to home or order history
+    alert("Order Placed!");                                           // Notify user
+    navigate("/account");                                             // Navigate to Account page
   };
 
   return (
